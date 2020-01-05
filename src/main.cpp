@@ -1,5 +1,67 @@
 #include <Arduino.h>
 
+// Config Variables
+const long intervall = 3600000;
+const long wateringTime = 10000;
+
+const int moistureMinimum = 500;
+
+// System variables
+long currentMillis = 0;
+short moistureCounter = 0;
+
+// DIGITAL IO variables
+const byte pumpRelay = 3;
+
+// ANALOG IO variables
+const byte moistureSensor = A0;
+
+void setup(){
+  pinMode(pumpRelay, OUTPUT);
+}
+
+void ticker(){
+// Initialize functions
+  if (timer()){
+    checkMoisture();
+  }
+}
+
+bool timer(){
+  if (millis() == currentMillis + intervall){
+    currentMillis = millis();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void checkMoisture(){
+// Use moisture sensor to check soil
+  int actualMoistureLevel = analogRead(moistureSensor);
+  if (actualMoistureLevel < moistureMinimum){
+    if (moistureCounter > 3){
+      activatePump();
+    } else {
+      moistureCounter++;
+    }
+  }
+}
+
+void activatePump(){
+// activater Pump for wateringTime milliseconds
+  moistureCounter = 0;
+  // TODO: Activate pump and figure out how to measure time
+}
+
+void loop(){
+
+}
+
+
+
+
+/*
 const byte numChars = 32;
 char receivedChars[numChars];   // an array to store the received data
 
@@ -109,3 +171,4 @@ void loop() {
   stopWatering();
   secondCounter();
 }
+*/
